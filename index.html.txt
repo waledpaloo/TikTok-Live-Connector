@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TikTok Challenge Overlay</title>
+  <meta property="og:title" content="TikTok Challenge Overlay">
+  <meta property="og:description" content="Real-time challenge bar with timer for TikTok Live">
+  <meta property="og:url" content="https://your-live-link-here.netlify.app">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .challenge-bar {
+      width: 100%;
+      height: 40px;
+      background: #222;
+      display: flex;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .bar {
+      height: 100%;
+      transition: width 0.5s ease;
+    }
+    .red {
+      background: red;
+      width: 50%;
+    }
+    .blue {
+      background: blue;
+      width: 50%;
+    }
+    #timer {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    .icons {
+      margin-top: 20px;
+    }
+    .icons img {
+      width: 40px;
+      height: 40px;
+      margin: 0 10px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <h1>1K OPEN THE DOUBLE 2 MINT</h1>
+  <div class="icons">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/TikTok_logo.png" alt="TikTok">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Emoji_u2764.svg/1024px-Emoji_u2764.svg.png" alt="Heart">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Emoji_u1f451.svg/1024px-Emoji_u1f451.svg.png" alt="Crown">
+  </div>
+  <div class="challenge-bar">
+    <div id="redBar" class="bar red"></div>
+    <div id="blueBar" class="bar blue"></div>
+  </div>
+  <div id="timer">3:00</div>  <script>
+    // WebSocket Connection
+    const socket = new WebSocket("wss://yourserver.com/challenge");
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "updateScore") {
+        updateBar(data.red, data.blue);
+      }
+
+      if (data.type === "resetTimer") {
+        resetTimer(data.time);
+      }
+    };
+
+    function updateBar(redScore, blueScore) {
+      document.getElementById("redBar").style.width = `${redScore}%`;
+      document.getElementById("blueBar").style.width = `${blueScore}%`;
+    }
+
+    // Countdown Timer
+    let timer = 180; // 3 minutes
+    const timerEl = document.getElementById("timer");
+    const timerInterval = setInterval(() => {
+      if (timer > 0) {
+        timer--;
+        timerEl.textContent = formatTime(timer);
+      }
+    }, 1000);
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function resetTimer(seconds) {
+      timer = seconds;
+    }
+  </script></body>
+</html>
